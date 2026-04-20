@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom rating styles - preserve from original */
+.coin-flip {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 2rem;
+  color: #ddd;
+  transition: color 0.2s;
+}
+
+.coin-flip.active {
+  color: #ffc107;
+}
+
+.coin-flip:hover {
+  color: #ffeb3b;
+}
+
+/* Global gradient theme */
+.app-gradient-bg {
+  position: relative;
+  background: #e9f7f1;
+  background-attachment: fixed;
+}
+
+.page-shell {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 1.25rem;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 22px 40px rgba(56, 189, 248, 0.16), 0 10px 24px rgba(244, 114, 182, 0.14);
+}
+
+.gradient-orb {
+  display: none;
+}
+
+.gradient-orb-cyan {
+  top: -4rem;
+  left: -3rem;
+  background: rgb(34, 211, 238);
+}
+
+.gradient-orb-rose {
+  top: 20%;
+  right: -4rem;
+  background: rgb(244, 114, 182);
+  animation-delay: 2s;
+}
+
+.gradient-orb-lime {
+  bottom: -5rem;
+  left: 40%;
+  background: rgb(132, 204, 22);
+  animation-delay: 4s;
+}
+
+@keyframes drift {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  100% {
+    transform: translateY(-22px) scale(1.08);
+  }
+}

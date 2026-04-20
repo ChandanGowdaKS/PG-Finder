@@ -1,0 +1,79 @@
+<% layout("/layouts/boilerplate") -%>
+
+<div class="mt-6 mb-10">
+  <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl p-6 md:p-10 shadow-lg">
+    <div class="flex flex-col md:flex-row md:items-center gap-6">
+      <img src="<%= profileUser.profileImage %>" alt="<%= profileUser.username %>" class="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-white/30">
+      <div class="flex-1">
+        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight"><%= profileUser.username %></h1>
+        <p class="text-slate-200 mt-1"><%= profileUser.email %></p>
+        <p class="text-slate-100/90 mt-3"><%= profileUser.bio || "No bio added yet." %></p>
+      </div>
+      <% if (isOwnerProfile) { %>
+        <a href="/listings/new" class="inline-block px-5 py-2.5 bg-white text-slate-900 rounded-lg font-semibold hover:bg-slate-100 transition-colors">Create Listing</a>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+    <div class="bg-white rounded-xl shadow p-5 border border-slate-100">
+      <p class="text-slate-500 text-sm">Listings</p>
+      <p class="text-3xl font-bold text-slate-900 mt-1"><%= userListings.length %></p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5 border border-slate-100">
+      <p class="text-slate-500 text-sm">Reviews</p>
+      <p class="text-3xl font-bold text-slate-900 mt-1"><%= userReviews.length %></p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5 border border-slate-100">
+      <p class="text-slate-500 text-sm">Avg Rating Given</p>
+      <% const avg = userReviews.length ? (userReviews.reduce((a, r) => a + (r.rating || 0), 0) / userReviews.length).toFixed(1) : "0.0"; %>
+      <p class="text-3xl font-bold text-slate-900 mt-1"><%= avg %></p>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-bold text-slate-900">My Listings</h2>
+    </div>
+
+    <% if (!userListings.length) { %>
+      <div class="bg-white rounded-xl shadow p-6 text-slate-600">No listings yet.</div>
+    <% } %>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% for (const item of userListings) { %>
+        <article class="bg-white rounded-xl shadow hover:shadow-xl overflow-hidden transition-shadow duration-300">
+          <a href="/listings/<%= item._id %>">
+            <img src="<%= item.image && item.image.url ? item.image.url : 'https://cdn.pixabay.com/photo/2024/05/01/12/59/nature-8732304_1280.jpg' %>" alt="<%= item.title %>" class="w-full h-48 object-cover">
+          </a>
+          <div class="p-4">
+            <h3 class="font-bold text-lg text-slate-900"><%= item.title %></h3>
+            <p class="text-red-500 font-semibold mt-1">&#8377 <%= item.price.toLocaleString("en-IN") %></p>
+            <p class="text-slate-500 text-sm mt-1"><%= item.location %>, <%= item.country %></p>
+            <a href="/listings/<%= item._id %>" class="inline-block mt-3 px-3 py-2 bg-slate-900 text-white rounded hover:bg-slate-800">View</a>
+          </div>
+        </article>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="mt-10">
+    <h2 class="text-2xl font-bold text-slate-900 mb-4">Review History</h2>
+
+    <% if (!userReviews.length) { %>
+      <div class="bg-white rounded-xl shadow p-6 text-slate-600">No reviews yet.</div>
+    <% } %>
+
+    <div class="space-y-3">
+      <% for (const review of userReviews) { %>
+        <div class="bg-white rounded-xl shadow p-4 border border-slate-100">
+          <div class="flex items-center justify-between">
+            <p class="font-semibold text-slate-900">Rating: <%= review.rating %> / 5</p>
+            <p class="text-sm text-slate-500"><%= review.createdAt ? new Date(review.createdAt).toLocaleDateString() : '' %></p>
+          </div>
+          <p class="text-slate-700 mt-2"><%= review.comment %></p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>

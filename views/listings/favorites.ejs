@@ -1,0 +1,28 @@
+<% layout("/layouts/boilerplate") -%>
+
+<div class="mt-6 mb-10">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-3xl font-bold text-slate-900">My Favorites</h1>
+    <a href="/listings" class="px-4 py-2 border border-slate-300 rounded hover:bg-slate-100">Back to Listings</a>
+  </div>
+
+  <% if (!favoriteListings.length) { %>
+    <div class="bg-white rounded-xl shadow p-6 text-slate-600">You have no favorites yet.</div>
+  <% } %>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% for (const item of favoriteListings) { %>
+      <article class="bg-white rounded-xl shadow hover:shadow-xl overflow-hidden transition-shadow duration-300">
+        <a href="/listings/<%= item._id %>">
+          <img src="<%= item.image && item.image.url ? item.image.url : 'https://cdn.pixabay.com/photo/2024/05/01/12/59/nature-8732304_1280.jpg' %>" alt="<%= item.title %>" class="w-full h-56 object-cover">
+        </a>
+        <div class="p-4">
+          <h2 class="font-bold text-lg text-slate-900"><%= item.title %></h2>
+          <p class="text-red-500 font-semibold mt-1">&#8377 <%= item.price.toLocaleString("en-IN") %></p>
+          <p class="text-slate-500 text-sm mt-1"><%= item.location %>, <%= item.country %></p>
+          <a href="/listings/<%= item._id %>" class="inline-block mt-3 px-3 py-2 bg-slate-900 text-white rounded hover:bg-slate-800">View</a>
+        </div>
+      </article>
+    <% } %>
+  </div>
+</div>

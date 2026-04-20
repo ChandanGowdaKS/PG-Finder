@@ -1,0 +1,132 @@
+<% layout("/layouts/boilerplate") -%>
+<div class="grid grid-cols-12 mt-3">
+    <div class="col-span-12 md:col-span-8 md:col-start-3 px-3">
+        <h3 class="text-2xl font-bold text-red-500">All Information about <b><%= list.title %></b></h3>
+    </div>
+    
+    <div class="col-span-12 md:col-span-6 md:col-start-4 bg-white rounded-lg shadow px-3 py-4 mt-4">
+        <img src="<%= list.image && list.image.url ? list.image.url : 'https://cdn.pixabay.com/photo/2024/05/01/12/59/nature-8732304_1280.jpg' %>" 
+        class="w-full h-96 object-cover rounded-t-lg" alt="<%= list.title %>"> 
+        <div class="mt-4">
+            <p class="text-gray-600"><i>Owned by: <strong><%= list.owner ? list.owner.username : "Owner not assigned" %></strong></i></p>
+            <p class="my-2"><b class="text-lg">Place: <i><%= list.title %></i></b></p>
+            <p class="text-gray-700">Description: <%= list.description %></p>
+            <p class="text-gray-700">Price: <strong>&#8377 <%= list.price.toLocaleString("en-IN") %></strong></p>
+            <p class="text-gray-700">Location: <%= list.location %></p>
+            <p class="text-gray-700">Country: <%= list.country %></p>
+        </div>
+    </div>
+
+    <div class="col-span-12 md:col-span-6 md:col-start-4 flex gap-2 px-3 mt-4">
+        <% if (currUser) { %>
+            <form method="POST" action="/listings/<%= list._id %>/favorite" class="flex-1">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="hidden" name="returnTo" value="/listings/<%= list._id %>">
+                <button type="submit" class="w-full px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700 transition-colors"><%= isFavorited ? 'Remove Favorite' : 'Add to Favorites' %></button>
+            </form>
+        <% } %>
+        <% if (currUser && list.owner && String(currUser._id) === String(list.owner._id)) { %>
+            <a href="/listings/<%= list._id %>/edit" class="flex-1 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-center transition-colors">Edit</a>
+            <form method="POST" action="/listings/<%= list._id %>?_method=DELETE" class="flex-1">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">Delete</button>
+            </form>
+        <% } %>
+    </div>
+
+    <div class="col-span-12 md:col-span-8 md:col-start-3 mb-3 px-3 mt-6">
+        <hr class="my-4">
+        <h4 class="text-xl font-bold">Leave your review</h4>
+        <form action="/listings/<%= list._id %>/reviews" method="POST" novalidate class="needs-validation mt-4">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="mb-3">
+                <label for="rating" class="block font-bold mb-2">Rating</label>
+                <fieldset class="starability-coinFlip">
+                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                    <label for="first-rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                    <label for="first-rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                    <label for="first-rate3" title="Average">3 stars</label>
+                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                    <label for="first-rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                    <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
+            </div>
+            <div class="mb-3">
+                <label for="comment" class="block font-bold mb-2">Comment</label>
+                <textarea name="review[comment]" id="comment" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" rows="5" required></textarea>
+                <div class="text-red-500 text-sm mt-1 hidden">Please submit some comments</div>
+            </div>
+            <button type="submit" class="px-4 py-2 border-2 border-gray-800 text-gray-800 rounded hover:bg-gray-800 hover:text-white transition-colors">Submit Review</button>
+        </form>
+        <hr class="my-6">
+
+        <p><b class="text-xl">All Reviews</b></p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <% for(review of list.reviews) { %>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h5 class="font-bold text-lg">@ <%= review.author ? review.author.username : "Anonymous" %></h5>
+                    <p class="starability-result" data-rating="<%= review.rating %>"></p>
+                    <p class="text-gray-700 mt-2"><%= review.comment %></p>
+                    <form method="POST" action="/listings/<%= list._id %>/reviews/<%= review._id %>?_method=DELETE" class="mt-3">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors">Delete</button>
+                    </form>
+                </div>
+            <% } %>
+        </div>
+
+        <hr class="my-6">
+        <div class="bg-white rounded-xl shadow p-5">
+            <h4 class="text-xl font-bold text-slate-900">Questions & Answers</h4>
+            <p class="text-sm text-slate-500 mt-1">Ask anything about this place. Owner can reply below.</p>
+
+            <% if (currUser) { %>
+                <form method="POST" action="/listings/<%= list._id %>/questions" class="mt-4">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <label for="questionText" class="block font-semibold text-slate-700 mb-2">Ask a question</label>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <input id="questionText" name="question[text]" type="text" required maxlength="300" class="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="Is public transport nearby?">
+                        <button type="submit" class="px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors">Post</button>
+                    </div>
+                </form>
+            <% } else { %>
+                <p class="mt-4 text-sm text-slate-600">Login to ask a question.</p>
+            <% } %>
+
+            <div class="mt-5 space-y-3">
+                <% if (!list.questions || !list.questions.length) { %>
+                    <p class="text-sm text-slate-500">No questions yet. Be the first to ask.</p>
+                <% } %>
+
+                <% for (const q of (list.questions || [])) { %>
+                    <div class="border border-slate-200 rounded-lg p-3">
+                        <p class="text-slate-900"><span class="font-semibold">Q:</span> <%= q.question %></p>
+                        <p class="text-xs text-slate-500 mt-1">Asked by <%= q.askedBy ? q.askedBy.username : 'User' %> • <%= q.createdAt ? new Date(q.createdAt).toLocaleDateString() : '' %></p>
+
+                        <% if (q.answer && q.answer.trim().length) { %>
+                            <div class="mt-3 bg-cyan-50 border border-cyan-100 rounded p-3">
+                                <p class="text-slate-900"><span class="font-semibold">A:</span> <%= q.answer %></p>
+                                <p class="text-xs text-slate-500 mt-1">Answered by <%= q.answeredBy ? q.answeredBy.username : 'Owner' %></p>
+                            </div>
+                        <% } else if (currUser && list.owner && String(currUser._id) === String(list.owner._id)) { %>
+                            <form method="POST" action="/listings/<%= list._id %>/questions/<%= q._id %>/answer?_method=PUT" class="mt-3">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <label for="answer-<%= q._id %>" class="block text-sm font-semibold text-slate-700 mb-2">Reply as owner</label>
+                                <div class="flex flex-col md:flex-row gap-2">
+                                    <input id="answer-<%= q._id %>" name="question[answer]" type="text" required maxlength="300" class="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="Thanks for asking! Yes, it is 5 min away.">
+                                    <button type="submit" class="px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-900 transition-colors">Reply</button>
+                                </div>
+                            </form>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+

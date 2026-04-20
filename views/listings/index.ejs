@@ -1,0 +1,137 @@
+<% layout("/layouts/boilerplate") -%>
+<%
+            const hasSearch = !!searchLocation;
+            const qLocation = searchLocation || "";
+            const qSort = sortBy || "recommended";
+            const activeFilters = filters || { minPrice: "", maxPrice: "", country: "", minRating: "" };
+            const pageInfo = pagination || { currentPage: 1, totalPages: 1, totalListings: allListings.length, limit: 12 };
+        %>
+
+    <h3 class="text-2xl font-bold my-4">
+      <% if(searchLocation){ %>
+        Search results for "<%= searchLocation %>"
+      <% } else { %>
+        All Listings
+      <% } %>
+    </h3>
+
+        <div class="bg-white rounded-lg shadow p-4 mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-sm text-slate-500">Adjust filters and see instant matches</p>
+                <p class="text-sm font-semibold text-slate-700">Live matches: <span id="liveResultsCount" data-initial-count="<%= pageInfo.totalListings %>"><%= pageInfo.totalListings %></span></p>
+            </div>
+            <form id="listingFiltersForm" data-live-count-url="/listings/count" method="GET" action="/listings" class="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
+                <% if (hasSearch) { %>
+                    <input type="hidden" name="location" value="<%= qLocation %>">
+                <% } %>
+
+                <div class="md:col-span-1">
+                    <label for="minPrice" class="block text-sm font-semibold text-gray-700 mb-1">Min Price</label>
+                    <input id="minPrice" name="minPrice" type="number" min="0" value="<%= activeFilters.minPrice %>" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="0">
+                </div>
+
+                <div class="md:col-span-1">
+                    <label for="maxPrice" class="block text-sm font-semibold text-gray-700 mb-1">Max Price</label>
+                    <input id="maxPrice" name="maxPrice" type="number" min="0" value="<%= activeFilters.maxPrice %>" class="w-full px-3 py-2 border border-gray-300 rounded" placeholder="10000">
+                </div>
+
+                <div class="md:col-span-1">
+                    <label for="country" class="block text-sm font-semibold text-gray-700 mb-1">Country</label>
+                    <select id="country" name="country" class="w-full px-3 py-2 border border-gray-300 rounded">
+                        <option value="">All</option>
+                        <% for (const countryItem of (countries || [])) { %>
+                            <option value="<%= countryItem %>" <%= activeFilters.country === countryItem ? 'selected' : '' %>><%= countryItem %></option>
+                        <% } %>
+                    </select>
+                </div>
+
+                <div class="md:col-span-1">
+                    <label for="minRating" class="block text-sm font-semibold text-gray-700 mb-1">Min Rating</label>
+                    <select id="minRating" name="minRating" class="w-full px-3 py-2 border border-gray-300 rounded">
+                        <option value="">Any</option>
+                        <option value="1" <%= String(activeFilters.minRating) === '1' ? 'selected' : '' %>>1+</option>
+                        <option value="2" <%= String(activeFilters.minRating) === '2' ? 'selected' : '' %>>2+</option>
+                        <option value="3" <%= String(activeFilters.minRating) === '3' ? 'selected' : '' %>>3+</option>
+                        <option value="4" <%= String(activeFilters.minRating) === '4' ? 'selected' : '' %>>4+</option>
+                        <option value="5" <%= String(activeFilters.minRating) === '5' ? 'selected' : '' %>>5</option>
+                    </select>
+                </div>
+
+                <div class="md:col-span-1">
+                    <label for="sort" class="block text-sm font-semibold text-gray-700 mb-1">Sort</label>
+                    <select id="sort" name="sort" class="w-full px-3 py-2 border border-gray-300 rounded">
+                        <option value="recommended" <%= qSort === 'recommended' ? 'selected' : '' %>>Recommended</option>
+                        <option value="newest" <%= qSort === 'newest' ? 'selected' : '' %>>Newest</option>
+                        <option value="priceAsc" <%= qSort === 'priceAsc' ? 'selected' : '' %>>Price: Low to High</option>
+                        <option value="priceDesc" <%= qSort === 'priceDesc' ? 'selected' : '' %>>Price: High to Low</option>
+                        <option value="rating" <%= qSort === 'rating' ? 'selected' : '' %>>Top Rated</option>
+                    </select>
+                </div>
+
+                <div class="md:col-span-1 flex gap-2">
+                    <button id="applyFiltersBtn" type="submit" class="w-full px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900">Apply</button>
+                    <a href="/listings<%= hasSearch ? '?location=' + encodeURIComponent(qLocation) : '' %>" class="w-full px-4 py-2 text-center border border-gray-300 rounded hover:bg-gray-100">Clear</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
+                <p class="text-gray-600">
+                        Showing <%= allListings.length %> of <%= pageInfo.totalListings %> listings
+                </p>
+        </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% if (allListings.length === 0) { %>
+            <p class="col-span-full text-gray-600 text-lg">No listings found for this location.</p>
+        <% } %>
+        <% for(let listings of allListings){ %>
+            <% const isFav = (favoriteIds || []).includes(String(listings._id)); %>
+            <div class="bg-white rounded-lg shadow-md hover:shadow-xl overflow-hidden transition-shadow duration-300">
+                <a href="/listings/<%= listings._id %>">
+                    <img src="<%= listings.image && listings.image.url ? listings.image.url : 'https://cdn.pixabay.com/photo/2024/05/01/12/59/nature-8732304_1280.jpg' %>" 
+                    class="w-full h-72 object-cover hover:opacity-80 transition-opacity" 
+                    alt="<%= listings.title %>">
+                </a>
+                <div class="p-4">
+                    <p><b class="text-lg"><%= listings.title %></b></p>
+                    <p class="text-xl font-bold text-red-500 py-2">&#8377 <%= listings.price.toLocaleString("en-IN") %></p>
+                    <div class="flex items-center gap-2">
+                        <a href="/listings/<%= listings._id %>" class="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">View Details</a>
+                        <% if (currUser) { %>
+                            <form method="POST" action="/listings/<%= listings._id %>/favorite">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <input type="hidden" name="returnTo" value="<%= '/listings?page=' + pageInfo.currentPage + (hasSearch ? '&location=' + encodeURIComponent(qLocation) : '') + (qSort ? '&sort=' + encodeURIComponent(qSort) : '') + (activeFilters.minPrice !== '' ? '&minPrice=' + encodeURIComponent(activeFilters.minPrice) : '') + (activeFilters.maxPrice !== '' ? '&maxPrice=' + encodeURIComponent(activeFilters.maxPrice) : '') + (activeFilters.country ? '&country=' + encodeURIComponent(activeFilters.country) : '') + (activeFilters.minRating !== '' ? '&minRating=' + encodeURIComponent(activeFilters.minRating) : '') %>">
+                                <button type="submit" class="px-3 py-2 rounded border border-gray-300 hover:bg-gray-100" title="Toggle favorite">
+                                    <%= isFav ? '❤️' : '🤍' %>
+                                </button>
+                            </form>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </div>
+
+    <div class="flex items-center justify-center gap-2 mt-8 mb-4">
+        <% const prevPage = pageInfo.currentPage - 1; %>
+        <% const nextPage = pageInfo.currentPage + 1; %>
+
+        <% if (pageInfo.currentPage > 1) { %>
+            <a class="px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100"
+               href="/listings?page=<%= prevPage %><%= hasSearch ? '&location=' + encodeURIComponent(qLocation) : '' %><%= qSort ? '&sort=' + encodeURIComponent(qSort) : '' %><%= activeFilters.minPrice !== '' ? '&minPrice=' + encodeURIComponent(activeFilters.minPrice) : '' %><%= activeFilters.maxPrice !== '' ? '&maxPrice=' + encodeURIComponent(activeFilters.maxPrice) : '' %><%= activeFilters.country ? '&country=' + encodeURIComponent(activeFilters.country) : '' %><%= activeFilters.minRating !== '' ? '&minRating=' + encodeURIComponent(activeFilters.minRating) : '' %>">Previous</a>
+        <% } else { %>
+            <span class="px-4 py-2 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed">Previous</span>
+        <% } %>
+
+        <span class="px-4 py-2 text-sm text-gray-700">
+            Page <%= pageInfo.currentPage %> of <%= pageInfo.totalPages %>
+        </span>
+
+        <% if (pageInfo.currentPage < pageInfo.totalPages) { %>
+            <a class="px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100"
+               href="/listings?page=<%= nextPage %><%= hasSearch ? '&location=' + encodeURIComponent(qLocation) : '' %><%= qSort ? '&sort=' + encodeURIComponent(qSort) : '' %><%= activeFilters.minPrice !== '' ? '&minPrice=' + encodeURIComponent(activeFilters.minPrice) : '' %><%= activeFilters.maxPrice !== '' ? '&maxPrice=' + encodeURIComponent(activeFilters.maxPrice) : '' %><%= activeFilters.country ? '&country=' + encodeURIComponent(activeFilters.country) : '' %><%= activeFilters.minRating !== '' ? '&minRating=' + encodeURIComponent(activeFilters.minRating) : '' %>">Next</a>
+        <% } else { %>
+            <span class="px-4 py-2 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed">Next</span>
+        <% } %>
+    </div>

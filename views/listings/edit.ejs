@@ -1,0 +1,164 @@
+<%- layout("./layouts/boilerplate.ejs") %>
+<body>
+  <div class="grid grid-cols-12 mt-6">
+    <div class="col-span-12 md:col-span-8 md:col-start-3">
+      <h3 class="text-3xl font-bold mb-4">Edit: <%= editingList.title %></h3>
+      <form
+        method="post"
+        action="/listings/<%= editingList._id %>?_method=PUT"
+        novalidate
+        class="needs-validation bg-white p-6 rounded-lg shadow"
+      >
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="mb-4">
+          <label for="title" class="block font-bold mb-2">Title:</label>
+          <input
+            name="listing[title]"
+            id="title"
+            type="text"
+            value="<%= editingList.title %>"
+            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <div
+            class="form-feedback hidden text-red-500 text-sm mt-1"
+            aria-live="polite"
+          >
+            Please enter the Title
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="description" class="block font-bold mb-2"
+            >Description:</label
+          >
+          <textarea
+            name="listing[description]"
+            id="description"
+            rows="5"
+            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+<%= editingList.description %></textarea
+          >
+          <div
+            class="form-feedback hidden text-red-500 text-sm mt-1"
+            aria-live="polite"
+          >
+            Please enter the Description
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <p class="block font-bold mb-2">Current Image:</p>
+          <img
+            src="<%= editingList.image.url %>"
+            class="rounded-2xl w-64 h-48 object-cover"
+            alt="<%= editingList.title %>"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="image[url]" class="block font-bold mb-2"
+            >Image URL:</label
+          >
+          <input
+            type="text"
+            name="listing[image][url]"
+            id="image[url]"
+            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value="<%= editingList.image.url %>"
+          />
+          <div
+            class="form-feedback hidden text-red-500 text-sm mt-1"
+            aria-live="polite"
+          >
+            Please enter the valid image URL
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="image[filename]" class="block font-bold mb-2"
+            >File Name:</label
+          >
+          <input
+            type="text"
+            name="listing[image][filename]"
+            id="image[filename]"
+            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value="<%= editingList.image.filename %>"
+          />
+          <div
+            class="form-feedback hidden text-red-500 text-sm mt-1"
+            aria-live="polite"
+          >
+            Please enter the valid filename
+          </div>
+        </div>
+
+        <div class="grid grid-cols-12 gap-4 mb-4">
+          <div class="col-span-12 md:col-span-4">
+            <label for="price" class="block font-bold mb-2">Price:</label>
+            <input
+              name="listing[price]"
+              id="price"
+              type="number"
+              value="<%= editingList.price %>"
+              class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <div
+              class="form-feedback hidden text-red-500 text-sm mt-1"
+              aria-live="polite"
+            >
+              Please enter the valid price
+            </div>
+          </div>
+
+          <div class="col-span-12 md:col-span-8">
+            <label for="country" class="block font-bold mb-2">Country:</label>
+            <input
+              name="listing[country]"
+              id="country"
+              type="text"
+              value="<%= editingList.country %>"
+              class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <div
+              class="form-feedback hidden text-red-500 text-sm mt-1"
+              aria-live="polite"
+            >
+              Please enter the Country
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="location" class="block font-bold mb-2">Location:</label>
+          <input
+            name="listing[location]"
+            id="location"
+            type="text"
+            value="<%= editingList.location %>"
+            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <div
+            class="form-feedback hidden text-red-500 text-sm mt-1"
+            aria-live="polite"
+          >
+            Please enter the Location
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full px-6 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 font-semibold transition-colors"
+        >
+          Update Listing
+        </button>
+      </form>
+    </div>
+  </div>
+</body>

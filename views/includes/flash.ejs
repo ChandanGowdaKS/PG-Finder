@@ -1,0 +1,21 @@
+<% if(typeof success !== 'undefined' && success && success.length){ %>
+    <div class="flex items-center justify-between bg-green-100 text-green-800 border-l-4 border-green-500 p-4 rounded mt-4 md:w-1/2 md:mx-auto animate-fadeIn" role="alert">
+        <span><%= success %></span>
+        <button type="button" class="text-green-800 hover:text-green-900 font-bold" onclick="this.parentElement.style.display='none';">×</button>
+    </div>
+<%} %>
+
+<% if(typeof deleted !== 'undefined' && deleted && deleted.length){ %>
+    <div class="flex items-center justify-between bg-green-100 text-green-800 border-l-4 border-green-500 p-4 rounded mt-4 md:w-1/2 md:mx-auto animate-fadeIn" role="alert">
+        <span><%= deleted %></span>
+        <button type="button" class="text-green-800 hover:text-green-900 font-bold" onclick="this.parentElement.style.display='none';">×</button>
+    </div>
+<%} %>
+
+<% if(typeof error !== 'undefined' && error && error.length){ %>
+    <div class="flex items-center justify-between bg-red-100 text-red-800 border-l-4 border-red-500 p-4 rounded mt-4 md:w-1/2 md:mx-auto animate-fadeIn" role="alert">
+        <span><%= error %></span>
+        <button type="button" class="text-red-800 hover:text-red-900 font-bold" onclick="this.parentElement.style.display='none';">×</button>
+    </div>
+<%} %>
+
