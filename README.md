@@ -10,17 +10,17 @@
 
 ## 📖 About the Project
 
-**StayNest** is a full-stack PG (Paying Guest) rental platform that simplifies the process of finding and listing PG accommodations. The platform allows users to explore verified PGs, view detailed property information, upload images, leave reviews, and manage their own listings.
+**PG Finder** is a full-stack PG (Paying Guest) rental platform that simplifies the process of finding and listing PG accommodations. The platform allows users to explore verified PGs, view detailed property information, upload images, leave reviews, and manage their own listings.
 
-Whether you're a student moving to a new city or a working professional searching for a comfortable place to stay, StayNest provides an easy-to-use platform to discover suitable PG accommodations.
+Whether you're a student moving to a new city or a working professional searching for a comfortable place to stay, PG Finder provides an easy-to-use platform to discover suitable PG accommodations.
 
-This project demonstrates modern full-stack web development concepts including authentication, authorization, CRUD operations, image uploads, server-side validation, MVC architecture, and cloud deployment.
+This project demonstrates modern full-stack web development concepts including authentication, authorisation, CRUD operations, image uploads, server-side validation, MVC architecture, and cloud deployment.
 
 ---
 
 ## 🚀 Live Demo
 
-**🌐 Website:** https://wanderlust-v2-4wfo.onrender.com/listings
+**🌐 Website:** https://wanderlust-v2-4wfo.onrender.com/
 
 ---
 
