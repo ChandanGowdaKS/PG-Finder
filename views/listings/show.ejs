@@ -1,14 +1,14 @@
 <% layout("/layouts/boilerplate") -%>
 <div class="grid grid-cols-12 mt-3">
     <div class="col-span-12 md:col-span-8 md:col-start-3 px-3">
-        <h3 class="text-2xl font-bold text-red-500">All Information about <b><%= list.title %></b></h3>
+        <h3 class="text-2xl font-bold text-red-500">All Info about <b><%= list.title %></b></h3>
     </div>
     
     <div class="col-span-12 md:col-span-6 md:col-start-4 bg-white rounded-lg shadow px-3 py-4 mt-4">
         <img src="<%= list.image && list.image.url ? list.image.url : 'https://cdn.pixabay.com/photo/2024/05/01/12/59/nature-8732304_1280.jpg' %>" 
         class="w-full h-96 object-cover rounded-t-lg" alt="<%= list.title %>"> 
         <div class="mt-4">
-            <p class="text-gray-600"><i>Owned by: <strong><%= list.owner ? list.owner.username : "Owner not assigned" %></strong></i></p>
+            <p class="text-gray-600"><i>Owned by : <strong><%= list.owner ? list.owner.username : "Owner not assigned" %></strong></i></p>
             <p class="my-2"><b class="text-lg">Place: <i><%= list.title %></i></b></p>
             <p class="text-gray-700">Description: <%= list.description %></p>
             <p class="text-gray-700">Price: <strong>&#8377 <%= list.price.toLocaleString("en-IN") %></strong></p>

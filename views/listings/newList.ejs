@@ -1,7 +1,7 @@
 <% layout("/layouts/boilerplate") -%>
 <div class="grid grid-cols-12 mt-6">
   <div class="col-span-12 md:col-span-8 md:col-start-3">
-    <h3 class="text-3xl font-bold mb-4">Create Your New Listing</h3>
+    <h3 class="text-3xl font-bold mb-4">Register Your PG</h3>
     <form
       method="POST"
       action="/listings"
@@ -11,7 +11,7 @@
     >
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       <div class="mb-4">
-        <label for="title" class="block font-bold mb-2">Title:</label>
+        <label for="title" class="block font-bold mb-2">PG Name:</label>
         <input
           name="listing[title]"
           type="text"
@@ -23,7 +23,7 @@
           class="form-feedback hidden text-red-500 text-sm mt-1"
           aria-live="polite"
         >
-          Please enter the Title
+          Please enter the PG Name
         </div>
       </div>
 
@@ -82,7 +82,7 @@
             name="listing[country]"
             type="text"
             class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="India"
+            placeholder="Karnataka"
             required
           />
           <div
